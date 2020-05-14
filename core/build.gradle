@@ -1,0 +1,3 @@
+dependencies {
+    compile("javax.vecmath:vecmath:1.5.2")
+}
