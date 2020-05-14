@@ -1,2 +1,4 @@
 rootProject.name = 'NaturalTerrainGeneration'
+include 'visualization'
+include 'core'
 

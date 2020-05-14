@@ -1,0 +1,16 @@
+configurations {
+    jar.archiveName = 'Visualization-' + getVersion() + '.jar'
+}
+
+dependencies {
+    implementation project(":core")
+    compile project(":core")
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': "de.daschi.visualization.application.Application"
+        )
+    }
+}
