@@ -49,6 +49,10 @@ public class Application extends javafx.application.Application {
         primaryStage.setTitle("NaturalTerrainGeneration - Visualization"); //set title
         primaryStage.setResizable(false); //set resizable
 
+//create root
+        final BorderPane root = new BorderPane();
+        root.setPadding(new Insets(Application.OFFSET, Application.OFFSET, Application.OFFSET, 0));
+
         //seed setting
         final Pane seed = ApplicationHelper.generateSpinnerSetting("Seed", Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 1, Application.seed);
 
@@ -67,18 +71,13 @@ public class Application extends javafx.application.Application {
         //create settings
         final VBox settings = new VBox(Application.OFFSET, seed, octaves, persistence, lacunarity, noiseType);
         settings.setPadding(new Insets(Application.OFFSET));
-
-        Application.canvas = new Canvas(Application.WIDTH - settings.getWidth(), Application.HEIGHT - Application.OFFSET); //create canvas
-
-        //create root
-        final BorderPane root = new BorderPane();
-        root.setPadding(new Insets(Application.OFFSET, Application.OFFSET, Application.OFFSET, 0));
         root.setLeft(settings);
-        root.setCenter(Application.canvas);
 
         primaryStage.setScene(new Scene(root, Application.WIDTH, Application.HEIGHT)); //create scene
-
         primaryStage.show(); //show primaryStage
+
+        Application.canvas = new Canvas(Application.WIDTH - settings.getWidth(), Application.HEIGHT - Application.OFFSET); //create canvas
+        root.setCenter(Application.canvas);
 
         Application.updateNoise(); //draw noise
     }
