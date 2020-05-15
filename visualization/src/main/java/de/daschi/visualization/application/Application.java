@@ -1,22 +1,16 @@
 package de.daschi.visualization.application;
 
 import de.daschi.core.math.MathHelper;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-
-import java.text.DecimalFormat;
 
 public class Application extends javafx.application.Application {
 
@@ -35,35 +29,37 @@ public class Application extends javafx.application.Application {
         return Application.canvas;
     }
 
+    public static int getWIDTH() {
+        return Application.WIDTH;
+    }
+
+    public static int getHEIGHT() {
+        return Application.HEIGHT;
+    }
+
+    public static int getOFFSET() {
+        return Application.OFFSET;
+    }
+
     @Override
     public void start(final Stage primaryStage) {
         primaryStage.setTitle("NaturalTerrainGeneration - Visualization"); //set title
         primaryStage.setResizable(false); //set resizable
 
         //seed setting
-        final TextField textField = new TextField("10000"); // TODO: 15.05.2020 make extra funxtion + label
-        textField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                textField.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-            if (textField.getText().length() >= 9) {
-                textField.setText("999999999"); // FIXME: 15.05.2020 exeeding integer limit + empty seed
-            }
-            Application.seed.set(Integer.parseInt(newValue));
-            this.drawNoise();
-        });
+        final HBox seed = ApplicationHelper.generateSpinnerSetting("Seed", Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 1, Application.seed);
 
         //octaves setting
-        final HBox octaves = this.generateSliderSetting("Octaves", 1, 6, 3, 1, Application.octaves);
+        final HBox octaves = ApplicationHelper.generateSpinnerSetting("Octaves", 1, 9, 3, 1, Application.octaves);
 
         //octaves persistence
-        final HBox persistence = this.generateSliderSetting("Persistence", 0.1, 2, 0.5, 0.1, Application.persistence);
+        final HBox persistence = ApplicationHelper.generateSpinnerSetting("Persistence", 0.1, 2, 0.5, 0.1, Application.persistence);
 
         //octaves lacunarity
-        final HBox lacunarity = this.generateSliderSetting("Lacunarity", 0.1, 4, 2, 0.1, Application.lacunarity);
+        final HBox lacunarity = ApplicationHelper.generateSpinnerSetting("Lacunarity", 0.1, 4, 2, 0.1, Application.lacunarity);
 
         //create settings
-        final VBox settings = new VBox(Application.OFFSET, textField, octaves, persistence, lacunarity);
+        final VBox settings = new VBox(Application.OFFSET, seed, octaves, persistence, lacunarity);
         settings.setPadding(new Insets(Application.OFFSET));
 
         Application.canvas = new Canvas(Application.WIDTH - settings.getWidth(), Application.HEIGHT - Application.OFFSET); //create canvas
@@ -78,33 +74,10 @@ public class Application extends javafx.application.Application {
 
         primaryStage.show(); //show primaryStage
 
-        this.drawNoise(); //draw noise
+        Application.updateNoise(); //draw noise
     }
 
-    //slider setting generator
-    private HBox generateSliderSetting(final String name, final double min, final double max, final double defaultValue, final double steps, final Property<Number> numberProperty) {
-        final HBox hBox = new HBox(Application.OFFSET);
-
-        //create label
-        final Label label = new Label(name + ": " + defaultValue);
-
-        //generate slider
-        final Slider slider = new Slider(min, max, defaultValue);
-        slider.setBlockIncrement(steps);
-        slider.setMajorTickUnit(steps);
-        slider.setShowTickLabels(true);
-        slider.setShowTickMarks(true);
-        slider.valueProperty().bindBidirectional(numberProperty);
-        slider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            label.setText(name + ": " + new DecimalFormat("0.0").format(newValue));
-            this.drawNoise();
-        });
-
-        hBox.getChildren().addAll(label, slider);
-        return hBox;
-    }
-
-    private void drawNoise() {
+    public static void updateNoise() {
         //basic noise visualization
         Application.canvas.getGraphicsContext2D().clearRect(0, 0, Application.canvas.getWidth(), Application.canvas.getHeight());
         for (int x = 0; x < Application.canvas.getWidth(); x++) {

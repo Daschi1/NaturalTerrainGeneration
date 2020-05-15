@@ -1,7 +1,3 @@
-configurations {
-    jar.archiveName = 'Visualization-' + getVersion() + '.jar'
-}
-
 dependencies {
     implementation project(":core")
     compile project(":core")

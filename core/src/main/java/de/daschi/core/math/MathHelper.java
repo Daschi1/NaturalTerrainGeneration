@@ -14,4 +14,13 @@ public class MathHelper {
     public static float scaleToRange(final float value, final float valueMin, final float valueMax, final float targetMin, final float targetMax) {
         return (value - valueMin) / (valueMax - valueMin) * (targetMax - targetMin) + targetMin;
     }
+
+    public static boolean isInteger(final String value) {
+        try {
+            Integer.parseInt(value);
+        } catch (final NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
 }
