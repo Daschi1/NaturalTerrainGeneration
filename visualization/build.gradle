@@ -1,3 +1,7 @@
+configurations {
+    jar.archiveName = 'NaturalTerrainGeneration-Visualization-' + getVersion() + '.jar'
+}
+
 dependencies {
     implementation project(":core")
     compile project(":core")
