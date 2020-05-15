@@ -1,13 +1,15 @@
 package de.daschi.visualization.application;
 
+import de.daschi.core.math.FastNoise;
 import de.daschi.core.math.MathHelper;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -19,6 +21,7 @@ public class Application extends javafx.application.Application {
     private static final SimpleIntegerProperty octaves = new SimpleIntegerProperty(3);// octaves
     private static final SimpleFloatProperty persistence = new SimpleFloatProperty(0.5f); //persistence
     private static final SimpleFloatProperty lacunarity = new SimpleFloatProperty(2); //lacunarity
+    private static final SimpleStringProperty noiseType = new SimpleStringProperty(FastNoise.NoiseType.PerlinFractal.toString());
     private static Canvas canvas; //main canvas
 
     public static void main(final String[] args) {
@@ -47,19 +50,22 @@ public class Application extends javafx.application.Application {
         primaryStage.setResizable(false); //set resizable
 
         //seed setting
-        final HBox seed = ApplicationHelper.generateSpinnerSetting("Seed", Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 1, Application.seed);
+        final Pane seed = ApplicationHelper.generateSpinnerSetting("Seed", Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 1, Application.seed);
 
         //octaves setting
-        final HBox octaves = ApplicationHelper.generateSpinnerSetting("Octaves", 1, 9, 3, 1, Application.octaves);
+        final Pane octaves = ApplicationHelper.generateSpinnerSetting("Octaves", 1, 9, 3, 1, Application.octaves);
 
-        //octaves persistence
-        final HBox persistence = ApplicationHelper.generateSpinnerSetting("Persistence", 0.1, 2, 0.5, 0.1, Application.persistence);
+        //persistence setting
+        final Pane persistence = ApplicationHelper.generateSpinnerSetting("Persistence", 0.1, 2, 0.5, 0.1, Application.persistence);
 
-        //octaves lacunarity
-        final HBox lacunarity = ApplicationHelper.generateSpinnerSetting("Lacunarity", 0.1, 4, 2, 0.1, Application.lacunarity);
+        //lacunarity setting
+        final Pane lacunarity = ApplicationHelper.generateSpinnerSetting("Lacunarity", 0.1, 4, 2, 0.1, Application.lacunarity);
+
+        //noiseType setting
+        final Pane noiseType = ApplicationHelper.generateRadioButtonsSetting("NoiseType", Application.noiseType, FastNoise.NoiseType.PerlinFractal, FastNoise.NoiseType.SimplexFractal);
 
         //create settings
-        final VBox settings = new VBox(Application.OFFSET, seed, octaves, persistence, lacunarity);
+        final VBox settings = new VBox(Application.OFFSET, seed, octaves, persistence, lacunarity, noiseType);
         settings.setPadding(new Insets(Application.OFFSET));
 
         Application.canvas = new Canvas(Application.WIDTH - settings.getWidth(), Application.HEIGHT - Application.OFFSET); //create canvas
@@ -82,7 +88,7 @@ public class Application extends javafx.application.Application {
         Application.canvas.getGraphicsContext2D().clearRect(0, 0, Application.canvas.getWidth(), Application.canvas.getHeight());
         for (int x = 0; x < Application.canvas.getWidth(); x++) {
             for (int y = 0; y < Application.canvas.getHeight(); y++) {
-                Application.canvas.getGraphicsContext2D().getPixelWriter().setColor(x, y, Color.gray(MathHelper.generatePerlinNoise(Application.seed.get(), x, y, Application.octaves.get(), Application.persistence.get(), Application.lacunarity.get(), 0, 1)));
+                Application.canvas.getGraphicsContext2D().getPixelWriter().setColor(x, y, Color.gray(MathHelper.generatePerlinNoise(Application.seed.get(), x, y, Application.octaves.get(), Application.persistence.get(), Application.lacunarity.get(), 0, 1, FastNoise.NoiseType.valueOf(Application.noiseType.get()))));
             }
         }
     }
