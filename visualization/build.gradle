@@ -1,5 +1,5 @@
 configurations {
-    jar.archiveName = 'Visualization-' + getVersion() + '.jar'
+    jar.archiveName = 'NaturalTerrainGeneration-Visualization-' + getVersion() + '.jar'
 }
 
 dependencies {
