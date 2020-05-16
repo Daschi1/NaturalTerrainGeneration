@@ -43,8 +43,10 @@ public class ApplicationHelper {
         final Spinner<Double> spinner = new Spinner<>(min, max, defaultValue, steps);
         spinner.setEditable(true);
         spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
-            property.setValue(newValue);
-            Application.updateNoise();
+            if (newValue >= min && newValue <= max) {
+                property.setValue(newValue);
+                Application.updateNoise();
+            }
         });
 
         hBox.getChildren().addAll(label, spinner);

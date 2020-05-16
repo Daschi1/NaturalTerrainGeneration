@@ -21,7 +21,7 @@ public class Application extends javafx.application.Application {
     private static final SimpleIntegerProperty octaves = new SimpleIntegerProperty(3);// octaves
     private static final SimpleFloatProperty persistence = new SimpleFloatProperty(0.5f); //persistence
     private static final SimpleFloatProperty lacunarity = new SimpleFloatProperty(2); //lacunarity
-    private static final SimpleStringProperty noiseType = new SimpleStringProperty(FastNoise.NoiseType.PerlinFractal.toString());
+    private static final SimpleStringProperty noiseType = new SimpleStringProperty(FastNoise.NoiseType.Value.toString());//noiseType
     private static Canvas canvas; //main canvas
 
     public static void main(final String[] args) {
@@ -66,7 +66,7 @@ public class Application extends javafx.application.Application {
         final Pane lacunarity = ApplicationHelper.generateSpinnerSetting("Lacunarity", 0.1, 4, 2, 0.1, Application.lacunarity);
 
         //noiseType setting
-        final Pane noiseType = ApplicationHelper.generateRadioButtonsSetting("NoiseType", Application.noiseType, FastNoise.NoiseType.PerlinFractal, FastNoise.NoiseType.SimplexFractal);
+        final Pane noiseType = ApplicationHelper.generateRadioButtonsSetting("NoiseType", Application.noiseType, (Object[]) FastNoise.NoiseType.values());
 
         //create settings
         final VBox settings = new VBox(Application.OFFSET, seed, octaves, persistence, lacunarity, noiseType);
@@ -87,7 +87,7 @@ public class Application extends javafx.application.Application {
         Application.canvas.getGraphicsContext2D().clearRect(0, 0, Application.canvas.getWidth(), Application.canvas.getHeight());
         for (int x = 0; x < Application.canvas.getWidth(); x++) {
             for (int y = 0; y < Application.canvas.getHeight(); y++) {
-                Application.canvas.getGraphicsContext2D().getPixelWriter().setColor(x, y, Color.gray(MathHelper.generatePerlinNoise(Application.seed.get(), x, y, Application.octaves.get(), Application.persistence.get(), Application.lacunarity.get(), 0, 1, FastNoise.NoiseType.valueOf(Application.noiseType.get()))));
+                Application.canvas.getGraphicsContext2D().getPixelWriter().setColor(x, y, Color.gray(MathHelper.generateNoise(Application.seed.get(), x, y, Application.octaves.get(), Application.persistence.get(), Application.lacunarity.get(), 0, 1, FastNoise.NoiseType.valueOf(Application.noiseType.get()))));
             }
         }
     }
