@@ -2,6 +2,7 @@ package de.daschi.visualization.application;
 
 import de.daschi.core.math.FastNoise;
 import de.daschi.core.math.MathHelper;
+import de.daschi.visualization.emulator.EmulatedChunk;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -79,7 +80,8 @@ public class Application extends javafx.application.Application {
         Application.canvas = new Canvas(Application.WIDTH - settings.getWidth(), Application.HEIGHT - Application.OFFSET); //create canvas
         root.setCenter(Application.canvas);
 
-        Application.updateNoise(); //draw noise
+//        Application.updateNoise(); //draw noise
+        EmulatedChunk.updateChunkMesh(Application.canvas);
     }
 
     public static void updateNoise() {
