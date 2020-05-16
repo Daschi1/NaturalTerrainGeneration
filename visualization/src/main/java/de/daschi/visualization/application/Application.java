@@ -9,6 +9,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -23,14 +25,19 @@ public class Application extends javafx.application.Application {
     private static final SimpleFloatProperty persistence = new SimpleFloatProperty(0.5f); //persistence
     private static final SimpleFloatProperty lacunarity = new SimpleFloatProperty(2); //lacunarity
     private static final SimpleStringProperty noiseType = new SimpleStringProperty(FastNoise.NoiseType.Value.toString());//noiseType
-    private static Canvas canvas; //main canvas
+    private static Canvas basicNoiseCanvas; //basic noise canvas
+    private static Canvas terrainCanvas; //terrain canvas
 
     public static void main(final String[] args) {
         Application.launch(args); //launch application
     }
 
-    public static Canvas getCanvas() {
-        return Application.canvas;
+    public static Canvas getBasicNoiseCanvas() {
+        return Application.basicNoiseCanvas;
+    }
+
+    public static Canvas getTerrainCanvas() {
+        return Application.terrainCanvas;
     }
 
     public static int getWIDTH() {
@@ -77,19 +84,22 @@ public class Application extends javafx.application.Application {
         primaryStage.setScene(new Scene(root, Application.WIDTH, Application.HEIGHT)); //create scene
         primaryStage.show(); //show primaryStage
 
-        Application.canvas = new Canvas(Application.WIDTH - settings.getWidth(), Application.HEIGHT - Application.OFFSET); //create canvas
-        root.setCenter(Application.canvas);
+        //create canvases
+        Application.basicNoiseCanvas = new Canvas(Application.WIDTH - settings.getWidth(), Application.HEIGHT - Application.OFFSET);
+        Application.terrainCanvas = new Canvas(Application.WIDTH - settings.getWidth(), Application.HEIGHT - Application.OFFSET);
+        final TabPane tabPane = ApplicationHelper.generateTabPane(new Tab("Basic noise", Application.basicNoiseCanvas), new Tab("Terrain", Application.terrainCanvas));
+        root.setCenter(tabPane);
 
-//        Application.updateNoise(); //draw noise
-        EmulatedChunk.updateChunkMesh(Application.canvas);
+        Application.updateNoise(); //draw noise
+        EmulatedChunk.updateChunkMesh(Application.terrainCanvas); //draw terrain
     }
 
     public static void updateNoise() {
         //basic noise visualization
-        Application.canvas.getGraphicsContext2D().clearRect(0, 0, Application.canvas.getWidth(), Application.canvas.getHeight());
-        for (int x = 0; x < Application.canvas.getWidth(); x++) {
-            for (int y = 0; y < Application.canvas.getHeight(); y++) {
-                Application.canvas.getGraphicsContext2D().getPixelWriter().setColor(x, y, Color.gray(MathHelper.generateNoise(Application.seed.get(), x, y, Application.octaves.get(), Application.persistence.get(), Application.lacunarity.get(), 0, 1, FastNoise.NoiseType.valueOf(Application.noiseType.get()))));
+        Application.basicNoiseCanvas.getGraphicsContext2D().clearRect(0, 0, Application.basicNoiseCanvas.getWidth(), Application.basicNoiseCanvas.getHeight());
+        for (int x = 0; x < Application.basicNoiseCanvas.getWidth(); x++) {
+            for (int y = 0; y < Application.basicNoiseCanvas.getHeight(); y++) {
+                Application.basicNoiseCanvas.getGraphicsContext2D().getPixelWriter().setColor(x, y, Color.gray(MathHelper.generateNoise(Application.seed.get(), x, y, Application.octaves.get(), Application.persistence.get(), Application.lacunarity.get(), 0, 1, FastNoise.NoiseType.valueOf(Application.noiseType.get()))));
             }
         }
     }

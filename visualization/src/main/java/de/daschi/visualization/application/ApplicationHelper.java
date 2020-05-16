@@ -3,10 +3,8 @@ package de.daschi.visualization.application;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.ToggleGroup;
+import javafx.geometry.Side;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -77,6 +75,14 @@ public class ApplicationHelper {
         vBox.getChildren().add(label);
         vBox.getChildren().addAll(radioButtons);
         return vBox;
+    }
+
+    //generate tabPane
+    public static TabPane generateTabPane(final Tab... tabs) {
+        final TabPane tabPane = new TabPane(tabs);
+        tabPane.setSide(Side.TOP);
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        return tabPane;
     }
 
     //hBox generator
